@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { firstValueFrom } from 'rxjs';
 import { ExchangeRate } from './entities/exchange-rate.entity';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class IngestionService {
@@ -65,6 +66,21 @@ export class IngestionService {
         error.message,
       );
       throw error;
+    }
+  }
+
+  @Cron(CronExpression.EVERY_3_HOURS)
+  async handleCron() {
+    this.logger.log('Running scheduled rate ingestion...');
+
+    try {
+      await this.fetchAndStoreRates('USD');
+      this.logger.log('Scheduled ingestion completed successfully');
+    } catch (error) {
+      this.logger.error(
+        'Scheduled ingestion failed',
+        error.message,
+      );
     }
   }
 }
