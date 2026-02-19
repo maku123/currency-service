@@ -1,98 +1,282 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Currency Rate Ingestion & Analytics Service
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A backend service that ingests foreign exchange rates from an external API, stores historical data, and exposes analytics endpoints such as latest rates and time-window averages.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+# 🚀 Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+* Periodic ingestion of exchange rates
+* Historical storage for analytics
+* Latest rate snapshot API
+* Average rate calculation API
+* Cron-based automation
+* PostgreSQL persistence
+* Dockerized deployment
+* Health monitoring endpoint
+* Request validation with DTOs
 
-## Project setup
+---
 
-```bash
-$ npm install
+# 🏗️ Tech Stack
+
+* **Framework:** NestJS (Node.js)
+* **Language:** TypeScript
+* **Database:** PostgreSQL
+* **ORM:** TypeORM
+* **Scheduler:** @nestjs/schedule
+* **Validation:** class-validator
+* **Containerization:** Docker & Docker Compose
+
+---
+
+# 📐 Architecture Overview
+
+External API → Ingestion Service → Transformation → PostgreSQL → Analytics APIs
+
+### Flow
+
+1. Fetch rates from Frankfurter API
+2. Transform JSON → relational rows
+3. Store with timestamp
+4. Run periodic ingestion via cron
+5. Expose analytics endpoints
+
+---
+
+# ⚙️ Environment Variables
+
+Create `.env` file:
+
+```
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_NAME=currency_service
 ```
 
-## Compile and run the project
+Inside Docker, DB_HOST is automatically set to `db`.
 
-```bash
-# development
-$ npm run start
+---
 
-# watch mode
-$ npm run start:dev
+# 🛠️ Local Development Setup
 
-# production mode
-$ npm run start:prod
+## 1️⃣ Install dependencies
+
+```
+npm install
 ```
 
-## Run tests
+## 2️⃣ Start PostgreSQL
 
-```bash
-# unit tests
-$ npm run test
+Ensure local Postgres is running.
 
-# e2e tests
-$ npm run test:e2e
+## 3️⃣ Run service
 
-# test coverage
-$ npm run test:cov
+```
+npm run start:dev
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+# 🐳 Docker Setup
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Build & start containers
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```
+docker compose up --build
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Stop containers
 
-## Resources
+```
+docker compose down
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# 🔄 Cron Job
 
-## Support
+Exchange rates are automatically fetched:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```
+Every 3 hours
+```
 
-## Stay in touch
+Implementation uses:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```
+@Cron(CronExpression.EVERY_3_HOURS)
+```
 
-## License
+Manual trigger also available via API.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
+
+# 📡 API Documentation
+
+---
+
+## 1️⃣ Fetch & Store Rates
+
+**POST**
+
+```
+/rates/fetch
+```
+
+Fetches latest exchange rates and stores them.
+
+---
+
+## 2️⃣ Get Latest Rates
+
+**GET**
+
+```
+/rates/latest?base=USD
+```
+
+### Response
+
+```json
+{
+  "base": "USD",
+  "timestamp": "2026-02-19T16:55:38.675Z",
+  "rates": {
+    "INR": 91.19,
+    "EUR": 0.85
+  }
+}
+```
+
+---
+
+## 3️⃣ Get Average Rate
+
+**GET**
+
+```
+/rates/average?base=USD&target=INR&period=24h
+```
+
+### Response
+
+```json
+{
+  "base": "USD",
+  "target": "INR",
+  "period": "24h",
+  "average_rate": 91.18
+}
+```
+
+---
+
+## 4️⃣ Health Check
+
+**GET**
+
+```
+/health
+```
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "timestamp": "2026-02-19T17:00:00Z"
+}
+```
+
+---
+
+# 🧾 Database Schema
+
+### Table: exchange_rates
+
+| Column          | Type          |
+| --------------- | ------------- |
+| id              | Primary Key   |
+| base_currency   | VARCHAR       |
+| target_currency | VARCHAR       |
+| rate            | DECIMAL(20,6) |
+| fetched_at      | TIMESTAMP     |
+| created_at      | TIMESTAMP     |
+
+Composite unique index ensures no duplicate snapshots.
+
+---
+
+# 📊 Data Ingestion Logic
+
+Each API response:
+
+```json
+USD → { INR: 91.19, EUR: 0.85 }
+```
+
+Is transformed into rows:
+
+| base | target | rate  |
+| ---- | ------ | ----- |
+| USD  | INR    | 91.19 |
+| USD  | EUR    | 0.85  |
+
+This enables historical analytics.
+
+---
+
+# 🔒 Validation
+
+DTO validation ensures:
+
+* Valid currency codes
+* Proper period format (e.g., 24h)
+* Required query parameters
+
+---
+
+# 🧠 Design Decisions
+
+* Historical storage enables time analytics
+* Composite indexing improves query speed
+* Cron ensures automation
+* Docker ensures portability
+* DTOs enforce API contracts
+
+---
+
+# ⚠️ Trade-offs & Limitations
+
+* No caching layer implemented
+* No API rate-limit handling
+* No circuit breaker for external API
+* Synchronize enabled (dev only)
+
+---
+
+# 🚀 Future Improvements
+
+* Redis caching
+* Circuit breaker pattern
+* API authentication
+* Kubernetes deployment
+* Metrics & monitoring
+* Rate change alerts
+
+---
+
+# 📦 Deployment Readiness
+
+Service is containerized and can be deployed on:
+
+* AWS EC2
+* AWS ECS / Fargate
+* Kubernetes
+* DigitalOcean
+* Any Docker-compatible infra
+
+---
