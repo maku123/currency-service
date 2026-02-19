@@ -18,7 +18,7 @@ import {
     @Column({ name: 'target_currency', type: 'varchar', length: 10 })
     targetCurrency: string;
   
-    @Column({ type: 'decimal', precision: 10, scale: 6 })
+    @Column({ type: 'decimal', precision: 20, scale: 6 })
     rate: number;
   
     @Column({ name: 'fetched_at', type: 'timestamp' })

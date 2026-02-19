@@ -1,14 +1,22 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { firstValueFrom } from 'rxjs';
+import { ExchangeRate } from './entities/exchange-rate.entity';
 
 @Injectable()
 export class IngestionService {
   private readonly logger = new Logger(IngestionService.name);
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
 
-  async fetchRates(base: string = 'USD') {
+    @InjectRepository(ExchangeRate)
+    private readonly exchangeRateRepo: Repository<ExchangeRate>,
+  ) {}
+
+  async fetchAndStoreRates(base: string = 'USD') {
     try {
       const url = `https://api.frankfurter.dev/v1/latest?base=${base}`;
 
@@ -20,12 +28,40 @@ export class IngestionService {
 
       const data = response.data;
 
-      this.logger.log(`Successfully fetched rates for ${base}`);
+      const fetchedAt = new Date();
 
-      return data;
+      const rates = data.rates;
+
+      const records: ExchangeRate[] = [];
+
+      // Transform JSON to Entities
+      for (const targetCurrency in rates) {
+        const rateValue = rates[targetCurrency];
+
+        const record = this.exchangeRateRepo.create({
+          baseCurrency: base,
+          targetCurrency,
+          rate: rateValue,
+          fetchedAt,
+        });
+
+        records.push(record);
+      }
+
+      // Save all records in bulk to the database
+      await this.exchangeRateRepo.save(records);
+
+      this.logger.log(
+        `Stored ${records.length} exchange rates successfully`,
+      );
+
+      return {
+        message: 'Rates fetched and stored successfully',
+        count: records.length,
+      };
     } catch (error) {
       this.logger.error(
-        `Failed to fetch exchange rates`,
+        'Failed to fetch and store exchange rates',
         error.message,
       );
       throw error;
