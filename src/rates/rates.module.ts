@@ -4,6 +4,7 @@ import { HttpModule } from '@nestjs/axios';
 import { ExchangeRate } from './entities/exchange-rate.entity';
 import { IngestionService } from './ingestion.service';
 import { RatesController } from './rates.controller';
+import { RatesService } from './rates.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { RatesController } from './rates.controller';
       maxRedirects: 5,
     }),
   ],
-  providers: [IngestionService],
+  providers: [IngestionService, RatesService],
   exports: [IngestionService],
   controllers: [RatesController],
 })
