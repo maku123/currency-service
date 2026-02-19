@@ -2,15 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ExchangeRate } from './entities/exchange-rate.entity';
+import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class RatesService {
+  private readonly logger = new Logger(RatesService.name);
+
   constructor(
     @InjectRepository(ExchangeRate)
     private readonly exchangeRateRepo: Repository<ExchangeRate>,
   ) {}
 
   async getLatestRates(base: string) {
+    this.logger.log(`Fetching latest rates for base: ${base}`);
+
     // find the latest timestamp
     const latest = await this.exchangeRateRepo
       .createQueryBuilder('rate')
@@ -48,6 +53,10 @@ export class RatesService {
     target: string,
     period: string,
   ) {
+    this.logger.log(
+      `Calculating average rate for ${base}-${target} over ${period}`,
+    );
+    
     const hours = parseInt(period.replace('h', ''), 10);
   
     const fromDate = new Date();
