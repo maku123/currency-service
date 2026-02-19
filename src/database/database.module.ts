@@ -15,6 +15,8 @@ import { ConfigService } from '@nestjs/config';
         database: configService.get<string>('DB_NAME'),
         autoLoadEntities: true,
         synchronize: true,
+        retryAttempts: 10,
+        retryDelay: 3000,
       }),
     }),
   ],
