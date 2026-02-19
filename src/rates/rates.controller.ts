@@ -1,6 +1,13 @@
-import { Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Query,
+} from '@nestjs/common';
 import { IngestionService } from './ingestion.service';
 import { RatesService } from './rates.service';
+import { LatestRatesDto } from './dto/latest-rates.dto';
+import { AverageRateDto } from './dto/average-rate.dto';
 
 @Controller('rates')
 export class RatesController {
@@ -15,20 +22,16 @@ export class RatesController {
   }
 
   @Get('latest')
-  async getLatestRates(@Query('base') base: string) {
-    return this.ratesService.getLatestRates(base);
+  async getLatest(@Query() query: LatestRatesDto) {
+    return this.ratesService.getLatestRates(query.base);
   }
 
   @Get('average')
-  async getAverage(
-    @Query('base') base: string,
-    @Query('target') target: string,
-    @Query('period') period: string,
-  ) {
+  async getAverage(@Query() query: AverageRateDto) {
     return this.ratesService.getAverageRate(
-      base,
-      target,
-      period,
+      query.base,
+      query.target,
+      query.period,
     );
   }
 }
