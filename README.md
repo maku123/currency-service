@@ -280,3 +280,58 @@ Service is containerized and can be deployed on:
 * Any Docker-compatible infra
 
 ---
+
+# 🌐 Live Deployment
+
+The service is deployed on AWS EC2 using Docker containers.
+
+## Base URL
+
+```
+http://54.90.216.103:3000
+```
+
+## Health Check
+
+```
+GET /health
+http://54.90.216.103:3000/health
+```
+
+## Fetch Latest Rates
+
+```
+POST /rates/fetch
+http://54.90.216.103:3000/rates/fetch
+```
+
+## Get Latest Snapshot
+
+```
+GET /rates/latest?base=USD
+http://54.90.216.103:3000/rates/latest?base=USD
+```
+
+## Get Average Rate
+
+```
+GET /rates/average?base=USD&target=INR&period=24h
+http://54.90.216.103:3000/rates/average?base=USD&target=INR&period=24h
+```
+
+---
+
+## 🐳 Deployment Architecture
+
+* AWS EC2 (Ubuntu)
+* Dockerized NestJS service
+* PostgreSQL container
+* Public port: 3000
+* Security group restricted to required ports only
+
+---
+
+## ⚠️ Note
+
+The public IP may change if the EC2 instance is stopped and restarted.
+If endpoints become inaccessible, please contact me for the updated URL.
